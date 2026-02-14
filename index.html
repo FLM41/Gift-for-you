@@ -20,7 +20,6 @@
         }
 
         body {
-            /* Upgraded Dreamy Bokeh Background */
             background: linear-gradient(135deg, #f0f7ff 0%, #e8e0ff 50%, #f0f7ff 100%);
             background-attachment: fixed;
             margin: 0;
@@ -32,7 +31,6 @@
             position: relative;
         }
 
-        /* Ambient Bokeh Glows */
         body::before {
             content: "";
             position: absolute;
@@ -121,10 +119,10 @@
             margin-bottom: 12px;
             color: var(--dark-purple);
             transition: 0.3s;
+            position: relative;
         }
 
-        .reward-card:hover { border-style: solid; background: #fdfbff; }
-        .reward-card.disabled { opacity: 0.2; cursor: not-allowed; }
+        .reward-card:hover { border-style: solid; background: #fdfbff; transform: scale(1.02); }
 
         .game-grid {
             display: grid;
@@ -192,12 +190,20 @@
             cursor: pointer;
             font-size: 1.1rem;
         }
+
+        .reveal-text {
+            display: none;
+            color: #2e7d32;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            animation: fadeIn 0.3s;
+        }
     </style>
 </head>
 <body>
 
     <audio id="sparkle-audio" loop>
-        <source src="https://mepro-music.com/wp-content/uploads/2021/09/YOUR-NAME-Kimi-no-Na-wa.mp3" type="audio/mpeg">
+        <source src="https://files.catbox.moe/p9o7gu.mp3" type="audio/mpeg">
     </audio>
 
     <div id="music-toggle" onclick="toggleMusic()">🔇</div>
@@ -214,31 +220,40 @@
 
     <div class="container">
         <div id="page1" class="page active">
-            <h1>A small reward for surviving a lot</h1>
+            <h1>A small reward, just because</h1>
             <p>You earned this 😄</p>
             <button onclick="startExperience()">Proceed carefully 😌</button>
         </div>
 
         <div id="page2" class="page">
-            <p>You handled a lot lately.</p>
-            <p> even while tired. That’s not easy.</p>
+            <p>You’ve been doing a lot lately.</p>
+            <p>Even while tired. That’s impressive.</p>
             <button onclick="triggerConfettiPage()">Next!</button>
         </div>
 
         <div id="page3" class="page">
             <h1>Surprise!! 🎉</h1>
-            <p> So i thought you deserved a small reward 😄</p>
+            <p>So i thought you deserved a small reward 😄</p>
             <button onclick="nextPage(4)">Show me! ✨</button>
         </div>
 
         <div id="page4" class="page">
-            <h1>Pick ONE reward 👇</h1>
+            <h1>Pick a reward 👇</h1>
+            <p style="font-size: 0.8rem; opacity: 0.7;">(You can check them all out!)</p>
             <div id="rewards-list">
-                <div class="reward-card" onclick="revealReward(this, 'A small drawing made just for you🎨(go get the 2nd one too by refreshing)')">🎁 Gift 1</div>
-                <div class="reward-card" onclick="revealReward(this, 'A Discord decoration bundle ✨')">🎁 Gift 2</div>
-                <div id="gift3-btn" class="reward-card" onclick="startMemoryGame()">🎁 Gift 3</div>
+                <div class="reward-card" onclick="revealReward(this, 'A small drawing made just for you 🎨')">
+                    🎁 Gift 1
+                    <div class="reveal-text">A small drawing made just for you 🎨</div>
+                </div>
+                <div class="reward-card" onclick="revealReward(this, 'A Discord decoration bundle ✨')">
+                    🎁 Gift 2
+                    <div class="reveal-text">A Discord decoration bundle ✨</div>
+                </div>
+                <div id="gift3-btn" class="reward-card" onclick="startMemoryGame()">🎁 Gift 3 (Game)</div>
             </div>
-            <div id="final-note" style="display:none; font-weight:bold; color:var(--dark-purple); margin-top:10px; font-size:0.9rem;">Nice choice 😄 Just message me which one you picked.</div>
+            <div id="final-note" style="display:none; font-weight:bold; color:var(--dark-purple); margin-top:15px; font-size:0.95rem; line-height: 1.4;">
+                Nice! Now don't be shy to receive your gift, just message me! 😄
+            </div>
         </div>
 
         <div id="page5" class="page">
@@ -260,7 +275,9 @@
         ];
 
         const audio = document.getElementById('sparkle-audio');
-        audio.volume = 0.4; // Set volume to 40% (low-to-mid)
+        // Volume set to 0.1 (lowered as requested)
+        audio.volume = 0.1;
+        let hasSeenPopup = false;
 
         function startExperience() {
             audio.play().catch(e => console.log(e));
@@ -297,7 +314,7 @@
             confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ['#9d8df1', '#bde0fe'] });
         }
 
-        let firstCard = null, secondCard = null, lockGrid = false, matches = 0;
+        let matches = 0;
         function startMemoryGame() {
             nextPage(5);
             const grid = document.getElementById('game-grid');
@@ -313,6 +330,7 @@
             });
         }
 
+        let firstCard, secondCard, lockGrid = false;
         function flipCard(card) {
             if (lockGrid || card === firstCard || card.classList.contains('matched')) return;
             card.classList.add('flipped');
@@ -331,43 +349,48 @@
         function showWinPopup() {
             const pop = document.getElementById('main-popup');
             document.getElementById('popup-title').innerText = "Congrats 😆 You did it!";
-            document.getElementById('popup-text').innerText = "";
+            document.getElementById('popup-text').innerText = "You're actually pretty good at this!";
             document.getElementById('levi-cheer-gif').style.display = "block";
-            document.getElementById('popup-btn').innerText = "Back to gifts";
+            document.getElementById('popup-btn').innerText = "Back to choices";
             document.getElementById('popup-btn').onclick = () => {
                 pop.classList.remove('show');
-                document.getElementById('gift3-btn').style.display = 'none';
                 nextPage(4);
             };
             pop.classList.add('show');
             confetti({ particleCount: 150, colors: ['#9d8df1', '#bde0fe'] });
         }
 
+        function revealReward(element, text) {
+            const innerText = element.querySelector('.reveal-text');
+            if (innerText.style.display === 'block') return;
+            
+            innerText.style.display = 'block';
+            element.style.borderStyle = 'solid';
+            element.style.borderColor = '#77dd77';
+            document.getElementById('final-note').style.display = 'block';
+
+            if (!hasSeenPopup) {
+                const pop = document.getElementById('main-popup');
+                document.getElementById('popup-title').innerText = "A Little Something 😏";
+                document.getElementById('popup-text').innerText = "Look at you, finding out what's inside! Now check the others if you want.";
+                document.getElementById('levi-cheer-gif').style.display = "none";
+                document.getElementById('popup-btn').onclick = () => pop.classList.remove('show');
+                pop.classList.add('show');
+                hasSeenPopup = true;
+            }
+            confetti({ particleCount: 40, colors: ['#9d8df1', '#bde0fe'], origin: { y: 0.8 } });
+        }
+
         function showSecretMsg() {
             const pop = document.getElementById('main-popup');
-            document.getElementById('popup-title').innerText = "Secret Found! ";
+            document.getElementById('popup-title').innerText = "Secret Found! 😆";
             document.getElementById('levi-cheer-gif').style.display = "none";
-            document.getElementById('popup-text').innerText = "Hehe, you found me , now dont forget to smile 😆";
+            document.getElementById('popup-text').innerText = "Hehe, you found me 😆, now dont forget to smile 😆";
             document.getElementById('popup-btn').innerText = "I will! 😄";
             document.getElementById('popup-btn').onclick = () => pop.classList.remove('show');
             pop.classList.add('show');
         }
 
-        let rewardPicked = false;
-        function revealReward(element, text) {
-            if (rewardPicked) return;
-            rewardPicked = true;
-            element.innerHTML += `<div style="color:#2e7d32; font-size:0.85rem; margin-top:5px;">${text}</div>`;
-            document.querySelectorAll('.reward-card').forEach(c => { if (c !== element) c.classList.add('disabled'); });
-            const pop = document.getElementById('main-popup');
-            document.getElementById('popup-title').innerText = "Great Choice! ";
-            document.getElementById('popup-text').innerText = "Look at you, making tough choices 😏";
-            document.getElementById('levi-cheer-gif').style.display = "none";
-            document.getElementById('popup-btn').onclick = () => pop.classList.remove('show');
-            pop.classList.add('show');
-            document.getElementById('final-note').style.display = 'block';
-            confetti({ particleCount: 100, colors: ['#9d8df1', '#bde0fe'] });
-        }
         function closePopup() { document.getElementById('main-popup').classList.remove('show'); }
     </script>
 </body>
