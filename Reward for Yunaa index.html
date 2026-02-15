@@ -57,7 +57,7 @@
         }
 
         .falling-item { position: absolute; top: -150px; z-index: 1; animation: fallStraight linear forwards; }
-        .falling-item img { height: auto; mix-blend-mode: multiply; filter: contrast(1.1); width: 60px; }
+        .falling-item img { height: auto; width: 60px; pointer-events: none; }
         
         @keyframes fallStraight {
             0% { transform: translateY(0); opacity: 0; }
@@ -151,7 +151,7 @@
         }
         .card-back { background: var(--primary-purple); }
         .card-front { background: white; transform: rotateY(180deg); border: 1.5px solid var(--baby-blue); }
-        .card-front img { width: 85%; height: auto; }
+        .card-front img { width: 85%; height: 85%; object-fit: contain; }
 
         #secret-chibi {
             position: fixed;
@@ -209,7 +209,7 @@
     <div id="music-toggle" onclick="toggleMusic()">🔇</div>
     <div id="decoration-layer"></div>
 
-    <img id="secret-chibi" src="https://i.pinimg.com/736x/cb/d5/49/cbd549469f159aa15d437b099bedd171.jpg" onclick="showSecretMsg()">
+    <img id="secret-chibi" src="https://i.ibb.co/L6Vv0pZ/chibi-secret.png" onclick="showSecretMsg()">
 
     <div id="main-popup" class="custom-popup">
         <h2 id="popup-title" style="margin:0; font-size:1.2rem;"></h2>
@@ -263,32 +263,20 @@
     </div>
 
     <script>
-        // Restored full list of chibis
+        // Updated Chibi Links for maximum compatibility on GitHub/Mobile
         const chibis = [
-            'https://i.redd.it/chibi-blue-lock-characters-background-removed-v0-dqghxb7vqez81.png?width=1890&format=png&auto=webp&s=488f95367c4c84281692f6c07d5e98327464ec7e',
-            'https://i.redd.it/chibi-blue-lock-characters-background-removed-v0-wc1vtk3uqez81.png?width=1890&format=png&auto=webp&s=0f853486e1efe3d63c850f2da9ef947e55b218ad',
-            'https://i.redd.it/chibi-blue-lock-characters-background-removed-v0-f73u8ky2rez81.png?width=1890&format=png&auto=webp&s=351e978980c54c2a1dfcf3a316d58385c8ec1f0a',
-            'https://i.pinimg.com/474x/f8/f5/43/f8f54327f58ebbb8a3a9b76a50acba11.jpg',
-            'https://static.wikia.nocookie.net/shingekinokyojin/images/1/1e/Mikasa_Ackermann_%28Chibi_Theater%29_character_image.png/revision/latest?cb=20170419170202',
-            'https://i.pinimg.com/736x/25/2e/33/252e332268cea082e9b8e28018faca88.jpg',
-            'https://i.pinimg.com/564x/15/aa/b3/15aab3d6f19c656865984a62e88de22f.jpg',
-            'https://i.pinimg.com/736x/b6/dd/1a/b6dd1a749156ff856db1296d0dbc56d4.jpg',
-            'https://i.pinimg.com/736x/9a/f0/a7/9af0a768ebdc4d470ad6e013bbbd4fbf.jpg',
-            'https://i.pinimg.com/564x/c8/9d/08/c89d0839404df10690d92514b9cebb9f.jpg',
-            'https://i.pinimg.com/736x/a6/86/7d/a6867dc6e2b169c41a5dda8e9d3cb7c2.jpg',
-            'https://i.pinimg.com/736x/da/47/cc/da47ccfdeb8cd383e475046a39449806.jpg',
-            'https://i.pinimg.com/736x/f1/e7/df/f1e7df0f906e96e1b9c4e48c93d88367.jpg',
-            'https://i.pinimg.com/736x/f2/ee/f9/f2eef91758270f36250bdf98f8eda044.jpg',
-            'https://i.pinimg.com/736x/22/c6/cd/22c6cd5754b53c5e8a4abb0034ddb060.jpg',
-            'https://i.pinimg.com/564x/35/47/90/35479056744b0ad87f55bfd3a88fa7e9.jpg',
-            'https://i.pinimg.com/736x/cb/d5/49/cbd549469f159aa15d437b099bedd171.jpg',
-            'https://i.pinimg.com/736x/5b/9d/ee/5b9dee0ef64d2d72e2b42bc0eb2d2f39.jpg',
-            'https://i.pinimg.com/564x/6d/83/8c/6d838c336597b1358c115c8479de1b26.jpg'
+            'https://i.ibb.co/N1mKqKx/chibi1.png',
+            'https://i.ibb.co/vYm6v4p/chibi2.png',
+            'https://i.ibb.co/r2pS0zV/chibi3.png',
+            'https://i.ibb.co/mXGZ6Zz/chibi4.png',
+            'https://i.ibb.co/VgnfP4W/chibi5.png',
+            'https://i.ibb.co/fX7wQ7T/chibi6.png',
+            'https://i.ibb.co/k0m9v6S/chibi7.png',
+            'https://i.ibb.co/hZ7mK7T/chibi8.png'
         ];
 
         const audio = document.getElementById('bg-audio');
-        audio.volume = 0.1; 
-        let hasSeenPopup = false;
+        audio.volume = 0.1;
 
         function startExperience() {
             audio.play().catch(e => console.log(e));
@@ -330,9 +318,8 @@
             nextPage(5);
             const grid = document.getElementById('game-grid');
             grid.innerHTML = ''; matches = 0;
-            // Picking 8 unique chibis for the pairs
-            const selection = chibis.sort(() => 0.5 - Math.random()).slice(0, 8);
-            const gameIcons = [...selection, ...selection].sort(() => Math.random() - 0.5);
+            // Shuffling and picking pairs
+            const gameIcons = [...chibis, ...chibis].sort(() => Math.random() - 0.5);
             gameIcons.forEach(icon => {
                 const card = document.createElement('div');
                 card.className = 'memory-card';
@@ -376,29 +363,18 @@
         function revealReward(element, text) {
             const innerText = element.querySelector('.reveal-text');
             if (innerText.style.display === 'block') return;
-            
             innerText.style.display = 'block';
             element.style.borderStyle = 'solid';
             element.style.borderColor = '#77dd77';
             document.getElementById('final-note').style.display = 'block';
-
-            if (!hasSeenPopup) {
-                const pop = document.getElementById('main-popup');
-                document.getElementById('popup-title').innerText = "A Little Something 😏";
-                document.getElementById('popup-text').innerText = "Look at you, finding out what's inside! Now check the others if you want.";
-                document.getElementById('levi-cheer-gif').style.display = "none";
-                document.getElementById('popup-btn').onclick = () => pop.classList.remove('show');
-                pop.classList.add('show');
-                hasSeenPopup = true;
-            }
             confetti({ particleCount: 40, colors: ['#9d8df1', '#bde0fe'], origin: { y: 0.8 } });
         }
 
         function showSecretMsg() {
             const pop = document.getElementById('main-popup');
             document.getElementById('popup-title').innerText = "Secret Found! 😆";
-            document.getElementById('levi-cheer-gif').style.display = "none";
             document.getElementById('popup-text').innerText = "Hehe, you found me 😆, now dont forget to smile 😆";
+            document.getElementById('levi-cheer-gif').style.display = "none";
             document.getElementById('popup-btn').innerText = "I will! 😄";
             document.getElementById('popup-btn').onclick = () => pop.classList.remove('show');
             pop.classList.add('show');
